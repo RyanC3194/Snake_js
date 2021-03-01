@@ -1,6 +1,6 @@
 "use strict"
-
-document.getElementById("score").innerHTML = "Score: 0"
+let score = 0
+document.getElementById("score").innerHTML = "Score: " + score
 
 
 let canvas = document.getElementById("myCanvas");
@@ -8,24 +8,49 @@ let ctx = canvas.getContext("2d");
 drawCoord()
 
 let head_coord =  randomCoord() //[x,y]
-let bodies = [head_coord.slice()]; // [coord1, coord2, coord3, ...]
+let bodies = [head_coord.slice()]; // [coord1, coord2, coord3, ...] //[x1,y1,x2,y2...]
 
 
 fillBox() // set the first tile
-let input = moveDown; //one of the 4 function: moveDown, moveUP, moveRight, moveLeft
+let input = moveRight; //one of the 4 function: moveDown, moveUP, moveRight, moveLeft
 let clear = false;
 
 let food_coord = [-1, -1]
+
+let inGame = false
+
 
 document.addEventListener('keydown', keyDownEvent);
 
 
 
-setFood()
 
-//start the game
-oneStep();
 
+
+
+function start() {
+    reset()
+    setFood()
+    if (!inGame) {
+        move()
+    }
+    inGame = true
+
+}
+
+function reset() {
+    score = 0
+    document.getElementById("score").innerHTML = "Score: " + score
+    ctx.fillStyle = 'white'
+    ctx.fillRect(0, 0, 500, 500)
+    drawCoord()
+    head_coord =  [0,0]
+    input = moveRight
+    bodies = [head_coord.slice()]
+    clear = true
+    fillBox()
+
+}
 
 function keyDownEvent(e) {
     switch (e.code) {
@@ -62,13 +87,17 @@ function checkCondition(){
 function move() {
     input()
     bodies.push(head_coord.slice())
+
     if (!checkCondition()) {
+        inGame = false
         gameEnd()
         return
     }
 
     fillBox()
     if (head_coord[0] === food_coord[0] && head_coord[1] === food_coord[1]) {
+        score += 1
+        document.getElementById("score").innerHTML = "Score: " + score
         setFood()
         clear = false
     }
@@ -83,6 +112,7 @@ function oneStep() {
     else {
         clear = true
     }
+    document.getElementById("d").innerHTML = bodies
     setTimeout(move, 500)
 }
 

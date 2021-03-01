@@ -1,4 +1,2 @@
 TODO:
-1. Score
-2. Don't generate block on snake body
-3. Start button
+2. Don't generate food on snake body
