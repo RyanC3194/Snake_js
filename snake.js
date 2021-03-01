@@ -7,7 +7,7 @@ let canvas = document.getElementById("myCanvas");
 let ctx = canvas.getContext("2d");
 drawCoord()
 
-let head_coord =  randomCoord() //[x,y]
+let head_coord =  [0,0] //[x,y]
 let bodies = [head_coord.slice()]; // [coord1, coord2, coord3, ...] //[x1,y1,x2,y2...]
 
 
@@ -43,6 +43,8 @@ function reset() {
     document.getElementById("score").innerHTML = "Score: " + score
     ctx.fillStyle = 'white'
     ctx.fillRect(0, 0, 500, 500)
+    ctx.fillStyle = 'red'
+    ctx.fillRect(0,0, 50, 50)
     drawCoord()
     head_coord =  [0,0]
     input = moveRight
@@ -71,12 +73,12 @@ function keyDownEvent(e) {
 
 function checkCondition(){
     //check for bound
-    if (head_coord[0] < 0 || head_coord[0] > 500 || head_coord[1] < 0 || head_coord[1] > 500){
+    if (head_coord[0] < 0 || head_coord[0] >= 500 || head_coord[1] < 0 || head_coord[1] >= 500){
         return false
     }
 
     // check for body collision
-    for (let i = 0; i < bodies.length-1; i++) {
+    for (let i = 0; i < bodies.length - 1; i++) {
         if ( head_coord[0] === bodies[i][0] && head_coord[1]===bodies[i][1]) {
             return false
         }
@@ -96,8 +98,7 @@ function move() {
 
     fillBox()
     if (head_coord[0] === food_coord[0] && head_coord[1] === food_coord[1]) {
-        score += 1
-        document.getElementById("score").innerHTML = "Score: " + score
+        score += 100
         setFood()
         clear = false
     }
@@ -108,10 +109,12 @@ function move() {
 function oneStep() {
     if (clear) {
         clearLast()
+        score -= 1
     }
     else {
         clear = true
     }
+    document.getElementById("score").innerHTML = "Score: " + score
     document.getElementById("d").innerHTML = bodies
     setTimeout(move, 500)
 }
@@ -175,6 +178,21 @@ function gameEnd() {
 
 function setFood() {
     food_coord = randomCoord()
+    let onBodies = false
+    while (true) {
+        onBodies = false
+        for (let i = 0; i < bodies.length; i++) {
+            if ( food_coord[0] === bodies[i][0] && food_coord[1]===bodies[i][1]) {
+                onBodies = true
+            }
+        }
+        if (onBodies) {
+            food_coord = randomCoord()
+        }
+        else {
+            break;
+        }
+    }
     ctx.fillStyle = 'yellow'
     ctx.fillRect(food_coord[0], food_coord[1], 50,50)
     drawCoord()
