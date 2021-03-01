@@ -115,7 +115,6 @@ function oneStep() {
         clear = true
     }
     document.getElementById("score").innerHTML = "Score: " + score
-    document.getElementById("d").innerHTML = bodies
     setTimeout(move, 500)
 }
 
